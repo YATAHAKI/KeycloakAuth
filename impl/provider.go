@@ -5,7 +5,7 @@ import (
 	"github.com/YATAHAKI/KeycloakAuth/models"
 	"github.com/YATAHAKI/KeycloakAuth/provider"
 	"github.com/go-playground/validator/v10"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
 	"log/slog"
 )

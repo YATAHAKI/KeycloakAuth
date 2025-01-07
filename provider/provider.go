@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 	"github.com/YATAHAKI/KeycloakAuth/models"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/lestrrat-go/jwx/jwk"
 )
 

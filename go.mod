@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/go-playground/validator/v10 v10.23.0
-	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
 	github.com/lestrrat-go/jwx v1.2.30
 	github.com/redis/go-redis/v9 v9.7.0

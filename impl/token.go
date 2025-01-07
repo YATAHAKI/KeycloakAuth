@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/rsa"
 	autherrors "github.com/YATAHAKI/KeycloakAuth/models"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"log/slog"
 )
 
