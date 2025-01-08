@@ -26,6 +26,14 @@ go get github.com/YATAHAKI/KeycloakAuth
 
 ## Usage
 
+### Simple config
+```yaml
+keycloak:
+  public_jwk_uri: http://localhost:8180/realms/example-client/protocol/openid-connect/certs
+  client_id: example-client
+  refresh_jwk_timeout: 12h # optional/default 3h
+```
+
 ### Verify a Token
 
 ```go
