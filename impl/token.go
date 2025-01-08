@@ -8,6 +8,8 @@ import (
 	"log/slog"
 )
 
+// VerifyToken verifies the JWT token passed as a string and returns its parsed structure if the token is valid.
+// In case of an error, returns an ErrInvalidToken error.
 func (p *Provider) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &models.Claims{ResourceAccess: models.ResourceAccess{
 		ClientID: p.config.ClientID,
@@ -20,6 +22,8 @@ func (p *Provider) VerifyToken(ctx context.Context, tokenString string) (*jwt.To
 	return token, nil
 }
 
+// KeyFunc returns a function that is used to retrieve the public key for token signature verification.
+// This function gets the JWK Set, retrieves the key by ID and returns it for verification.
 func (p *Provider) KeyFunc(ctx context.Context) jwt.Keyfunc {
 	return func(token *jwt.Token) (interface{}, error) {
 		var rawKey *rsa.PublicKey

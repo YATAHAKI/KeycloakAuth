@@ -11,12 +11,22 @@ import (
 
 var _ provider.AuthProvider = (*Provider)(nil)
 
+// Provider implements the AuthProvider interface and provides methods to authenticate, authorize, and manage secure endpoints.
 type Provider struct {
-	config          *Config
-	redis           *redis.Client
-	validate        *validator.Validate
+	// Config
+	config *Config
+
+	// Redis client
+	redis *redis.Client
+
+	// Validator
+	validate *validator.Validate
+
+	// Map of protected endpoints with roles
 	secureEndpoints map[string][]string
-	logger          *slog.Logger
+
+	// Logger
+	logger *slog.Logger
 }
 
 func NewProvider(config *Config, redis *redis.Client, validate *validator.Validate, logger *slog.Logger) *Provider {
@@ -29,15 +39,29 @@ func NewProvider(config *Config, redis *redis.Client, validate *validator.Valida
 	}
 }
 
+// AddSecureEndpoint adds a secure endpoint with the required roles to the secureEndpoints map.
+// Parameters:
+// - endpoint: the path of the endpoint
+// - roles: list of roles required for access
 func (p *Provider) AddSecureEndpoint(endpoint string, roles ...string) {
 	p.secureEndpoints[endpoint] = roles
 }
 
+// IsSecureEndpoint checks if the specified endpoint is protected.
+// Returns true if the endpoint is secured, otherwise false.
+// Parameters:
+// - endpoint: endpoint path.
 func (p *Provider) IsSecureEndpoint(endpoint string) bool {
 	_, ok := p.secureEndpoints[endpoint]
 	return ok
 }
 
+// Authorize authorizes the user based on the passed token and endpoint path.
+// Checks the validity of the token and whether the user has the necessary roles for access.
+// Parameters:
+// - path: path of the protected endpoint
+// - tokenString: string with user's JWT token
+// Returns user and error (if any).
 func (p *Provider) Authorize(ctx context.Context, path string, tokenString string) (models.User, error) {
 	token, err := p.VerifyToken(ctx, tokenString)
 	if err != nil {

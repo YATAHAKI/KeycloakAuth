@@ -37,7 +37,7 @@ keycloak:
 ### Verify a Token
 
 ```go
-ctx := context.Background()
+ctx := context.Background()g
 token, err := authProvider.VerifyToken(ctx, "your-jwt-token")
 if err != nil {
     log.Fatalf("Token verification failed: %v", err)
