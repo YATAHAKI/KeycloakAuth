@@ -1,6 +1,10 @@
 package models
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type Claims struct {
 	jwt.RegisteredClaims
@@ -27,6 +31,34 @@ type RealmAccess struct {
 type ResourceAccess struct {
 	RealmManagement RealmManagement `json:"realm-management,omitempty"`
 	Account         Account         `json:"account,omitempty"`
+	Client          Client          `json:"omitempty"`
+	ClientID        string          `json:"-"`
+}
+
+func (r *ResourceAccess) UnmarshalJSON(bytes []byte) error {
+	var rawMap map[string]json.RawMessage
+	if err := json.Unmarshal(bytes, &rawMap); err != nil {
+		return fmt.Errorf("cannot unmarshal json object: %w", err)
+	}
+
+	for key, value := range rawMap {
+		switch key {
+		case "realm-management":
+			if err := json.Unmarshal(value, &r.RealmManagement); err != nil {
+				return fmt.Errorf("cannot unmarshal realm-management object: %w", err)
+			}
+		case "account":
+			if err := json.Unmarshal(value, &r.Account); err != nil {
+				return fmt.Errorf("cannot unmarshal account object: %w", err)
+			}
+		case r.ClientID:
+			if err := json.Unmarshal(value, &r.Client); err != nil {
+				return fmt.Errorf("cannot unmarshal client object: %w", err)
+			}
+		}
+	}
+
+	return nil
 }
 
 type RealmManagement struct {
@@ -34,5 +66,9 @@ type RealmManagement struct {
 }
 
 type Account struct {
+	Roles []string `json:"roles,omitempty"`
+}
+
+type Client struct {
 	Roles []string `json:"roles,omitempty"`
 }
