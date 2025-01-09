@@ -2,6 +2,7 @@ package examples
 
 import (
 	"context"
+	"github.com/YATAHAKI/KeycloakAuth/models"
 	"github.com/YATAHAKI/KeycloakAuth/provider"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -13,7 +14,9 @@ import (
 
 func NewAuthInterceptor(auth provider.AuthProvider, logger *slog.Logger) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		if !auth.IsSecureEndpoint(info.FullMethod) {
+		if !auth.IsSecureEndpoint(models.SecureEndpoint{
+			Path: info.FullMethod,
+		}) {
 			logger.Info("Endpoint not protected", slog.String("method", info.FullMethod))
 			return handler(ctx, req)
 		}
@@ -36,7 +39,7 @@ func NewAuthInterceptor(auth provider.AuthProvider, logger *slog.Logger) grpc.Un
 			return nil, status.Error(codes.Unauthenticated, "Incorrect authorization token")
 		}
 
-		user, err := auth.Authorize(ctx, info.FullMethod, token)
+		user, err := auth.AuthorizeGRPC(ctx, info.FullMethod, token)
 		if err != nil {
 			logger.Error("Authorization failed", "method", info.FullMethod, "error", err)
 			return nil, status.Error(codes.PermissionDenied, "Authorization failed")

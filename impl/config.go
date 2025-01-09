@@ -1,7 +1,6 @@
 package keyimpl
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
 	"time"
 )
 
@@ -19,20 +18,4 @@ type Config struct {
 	// ClientID - client identifier for authentication.
 	// Must be specified in the configuration (environment variables or file).
 	ClientID string `env:"CLIENT_ID" json:"client_id" yaml:"client_id" validate:"required"`
-}
-
-// LoadConfig loads the configuration from the “config.yaml” file or from environment variables.
-// Load priority: first from the file, then from environment variables.
-// The configuration must match the Config structure and use the “KEYCLOAK_” prefix for environment variables.
-func LoadConfig() (*Config, error) {
-	var cfg struct {
-		Config Config `env-prefix:"KEYCLOAK_" yaml:"keycloak" json:"keycloak"`
-	}
-	if err := cleanenv.ReadConfig("config.yaml", &cfg); err != nil {
-		if err = cleanenv.ReadEnv(&cfg); err != nil {
-			return nil, err
-		}
-	}
-
-	return &cfg.Config, nil
 }
